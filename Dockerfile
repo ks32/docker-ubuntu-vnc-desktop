@@ -55,7 +55,10 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/apt/* /tmp/a.txt /tmp/b.txt
-
+    
+ADD https://www.syntevo.com/downloads/smartgit/smartgit-19_1_2.deb /root/smartgit-19_1_2.deb
+RUN sudo dpkg -i /root/smartgit-19_1_2.deb
+RUN sudo apt --fix-broken install
 
 ################################################################################
 # builder

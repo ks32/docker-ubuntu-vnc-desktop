@@ -8,7 +8,7 @@ RUN if [ "x$localbuild" != "x" ]; then sed -i 's#http://archive.ubuntu.com/#http
 
 # built-in packages
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends software-properties-common curl apache2-utils \
+    && apt-get install -y --no-install-recommends software-properties-common curl apache2-utils git vim nano python screen locales \
     && add-apt-repository ppa:fcwu-tw/apps \
     && apt-get update \
     && apt-get install -y --no-install-recommends --allow-unauthenticated \
@@ -25,6 +25,14 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 # Additional packages require ~600MB
 # libreoffice  pinta language-pack-zh-hant language-pack-gnome-zh-hant firefox-locale-zh-hant libreoffice-l10n-zh-tw
+
+RUN git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git /src/depot_tools
+ENV PATH "$PATH:/src/depot_tools"
+RUN git config --global user.name "Asif Hisam" && \
+    git config --global user.email "asif@email.com" && \
+    git config --global core.autocrlf false && \
+    git config --global core.filemode false && \
+    git config --global color.ui true
 
 # tini for subreap                                   
 ARG TINI_VERSION=v0.9.0
@@ -88,6 +96,7 @@ COPY image /
 
 EXPOSE 80
 WORKDIR /root
+ADD set /root/set
 ENV HOME=/home/ubuntu \
     SHELL=/bin/bash
 HEALTHCHECK --interval=30s --timeout=5s CMD curl --fail http://127.0.0.1/api/health
